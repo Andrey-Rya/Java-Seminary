@@ -87,7 +87,7 @@ class Notebook implements Serializable {
         }
     };
 
-    public static final Comparator<Notebook> COMPARE_BY_SCREENDIAGONAL = new Comparator<Notebook>() {
+    public static final Comparator<Notebook> COMPARE_BY_OPERATINGSYSTHEM = new Comparator<Notebook>() {
         @Override
         public int compare(Notebook lhs, Notebook rhs) {
             lhs.filter = Integer.valueOf(lhs.operatingSysthem);
@@ -152,7 +152,7 @@ class Manager
                 System.out.println("Название | Обьем ЖД (Гб)\n---------|--------");
                 break;
             case 3:
-                Collections.sort(notebooks, Notebook.COMPARE_BY_SCREENDIAGONAL);
+                Collections.sort(notebooks, Notebook.COMPARE_BY_OPERATINGSYSTHEM);
                 System.out.println("Название | Операционная система\n---------|--------");
                 break;
             case 4:
