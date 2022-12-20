@@ -1,3 +1,4 @@
+import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.*;
 
@@ -5,13 +6,12 @@ class Notebook implements Serializable {
     private String name;
     private int RAM;
     private int hardDiskSize;
-    private String operatingSysthem;
+    private int operatingSysthem;
     private int price;
 
     private int filter;
-    private Object getoperatingSysthem;
 
-    public Notebook(String name, int RAM, int hardDiskSize, String operatingSysthem, int price) {
+    public Notebook(String name, int RAM, int hardDiskSize, int operatingSysthem, int price) {
         this.name = name;
         this.RAM = RAM;
         this.hardDiskSize = hardDiskSize;
@@ -31,7 +31,7 @@ class Notebook implements Serializable {
         return hardDiskSize;
     }
 
-    public String getoperatingSysthem() {
+    public double getOperatingSysthem() {
         return operatingSysthem;
     }
 
@@ -43,18 +43,18 @@ class Notebook implements Serializable {
         return filter;
     }
 
-    public void setFilter(String criterial){
+    public void setFilter(int criterial){
         switch (criterial){
-            case "1":
+            case 1:
                 filter = RAM;
                 break;
-            case "2":
+            case 2:
                 filter = hardDiskSize;
                 break;
-            case "3":
-                filter = Integer.valueOf((String)operatingSysthem);
+            case 3:
+                filter = operatingSysthem;
                 break;
-            case "4":
+            case 4:
                 filter = price;
                 break;
         }
@@ -62,7 +62,7 @@ class Notebook implements Serializable {
 
     public static final Comparator<Notebook> COMPARE_BY_PRICE = new Comparator<Notebook>() {
         @Override
-        public int compare(Notebook lhs, Notebook rhs) {
+        public int compare(@NotNull Notebook lhs, Notebook rhs) {
             lhs.filter = lhs.price;
             rhs.filter = rhs.price;
             return lhs.getPrice() - rhs.getPrice();
@@ -90,9 +90,9 @@ class Notebook implements Serializable {
     public static final Comparator<Notebook> COMPARE_BY_OPERATINGSYSTHEM = new Comparator<Notebook>() {
         @Override
         public int compare(Notebook lhs, Notebook rhs) {
-            lhs.filter = Integer.valueOf(lhs.operatingSysthem);
-            rhs.filter = Integer.valueOf(rhs.operatingSysthem);
-            return Integer.valueOf((String) lhs.getoperatingSysthem) - Integer.valueOf((String) rhs.getoperatingSysthem);
+            lhs.filter = lhs.operatingSysthem;
+            rhs.filter = rhs.operatingSysthem;
+            return (int) (lhs.getOperatingSysthem() - rhs.getOperatingSysthem());
 
 
         }
@@ -108,28 +108,29 @@ class Manager
     private HashMap<Integer, String> critertions = new HashMap<Integer, String>();
     public Manager()
     {
-        critertions.put(1, "ОЗУ");
-        critertions.put(2, "Объем жесткого диска (ЖД)");
+        critertions.put(1, "ОЗУ (Гб)");
+        critertions.put(2, "Объем жесткого диска (Гб)");
         critertions.put(3, "Операционная система ");
-        critertions.put(4, "Цена(руб)");
+        critertions.put(4, "Цена (руб)");
     }
 
-    public void filterByCriterion(ArrayList<Notebook> notebooks, String criterion) {
+    public void filterByCriterion(ArrayList<Notebook> notebooks, int criterion) {
         for (Notebook notebook : notebooks) {
             notebook.setFilter(criterion);
         }
 
         switch (criterion){
-            case "1":
+            case 1:
                 System.out.println("Название | ОЗУ(Гб)\n---------|--------");
                 break;
-            case "2":
+            case 2:
                 System.out.println("Название | Обьем ЖД (Гб)\n---------|--------");
                 break;
-            case "3":
+            case 3:
+                System.out.println("[1-Windows 10 | 2-Linux | 3-macOS | 4-Ubuntu]");
                 System.out.println("Название | Операционная система\n---------|-------");
                 break;
-            case "4":
+            case 4:
                 System.out.println("Название | Цена(руб)\n---------|--------");
                 break;
         }
@@ -152,6 +153,7 @@ class Manager
                 System.out.println("Название | Обьем ЖД (Гб)\n---------|--------");
                 break;
             case 3:
+                System.out.println("[1-Windows 10 | 2-Linux | 3-macOS | 4-Ubuntu]");
                 Collections.sort(notebooks, Notebook.COMPARE_BY_OPERATINGSYSTHEM);
                 System.out.println("Название | Операционная система\n---------|--------");
                 break;
@@ -175,10 +177,10 @@ public class Main {
 
         ArrayList<Notebook> notebooks = new ArrayList<Notebook>();
 
-        Notebook Asus = new Notebook("Asus", 16, 256, "Windows 10",59000);
-        Notebook HP = new Notebook("HP  ", 16, 512, "Ubuntu",75000);
-        Notebook MacBook = new Notebook("MacBook", 32, 256, "macOS", 54000);
-        Notebook Lenovo = new Notebook("Lenovo", 8, 512, "Linux",65000);
+        Notebook Asus = new Notebook("Asus", 8, 512, 3,59000);
+        Notebook HP = new Notebook("HP  ", 32, 2000, 1,75000);
+        Notebook MacBook = new Notebook("Aser", 6, 256, 4, 54000);
+        Notebook Lenovo = new Notebook("Lenovo", 16, 1000, 2,65000);
 
         notebooks.add(Asus);
         notebooks.add(HP);
@@ -197,7 +199,7 @@ public class Main {
         int criterion = scanner.nextInt();
 
         System.out.println("\nПодходящие ноутбуки по фильтру " + criterion + ":");
-        manager.filterByCriterion(notebooks, String.valueOf(criterion));
+        manager.filterByCriterion(notebooks, criterion);
         System.out.println("\nПодходящие ноутбуки по фильтру " + criterion + " c сортировкой:");
         manager.sortFilter(notebooks, criterion);
     }
